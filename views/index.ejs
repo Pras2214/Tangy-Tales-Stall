@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Zayka Stall</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div id="form-container">
+      <form id="myForm" action="/submit-form" method="post">
+        <h1 class="heading">Tangy Tales</h1>
+        <section class="details">
+          <h2>Customer Details</h2>
+          <label for="name">Name:</label>
+          <input type="text" name="name" class="name" required />
+          <label for="pNumber">Phone Number:</label>
+          <input
+            type="text"
+            pattern="[0-9]+"
+            name="pNumber"
+            class="pNumber"
+            required
+          />
+        </section>
+        <hr />
+        <section id="order">
+          <h2>Order</h2>
+          <article id="skippi-article">
+            <label for="skippi" id="skippi-label">Skippi: 20₹</label>
+            <input
+              type="checkbox"
+              onchange="toggleInputVisibility(1)"
+              name="skippi"
+              class="skippi showInput1"
+            />
+            <div class="count-container">
+              <label for="skippi-count" id="skippi-count-label">Count: </label>
+              <input
+                type="number"
+                name="skippiCount"
+                id="skippi-count"
+                class="numberInput1"
+                value="0"
+              />
+            </div>
+          </article>
+          <article id="tosteta-article">
+            <label id="tosteta-label">Tosteta: 80₹ (3 pcs), 120₹ (5 pcs)</label>
+            <label for="tosteta" id="radio-label">3: </label
+            ><input
+              type="radio"
+              value="3"
+              name="tosteta"
+              class="tosteta showInput2"
+              onchange="radioCheck(2)"
+            />
+            <label for="tosteta" id="radio-label">5: </label
+            ><input
+              type="radio"
+              value="5"
+              name="tosteta"
+              class="tosteta showInput2"
+              onchange="radioCheck(2)"
+            />
+            <div class="count-container">
+              <label for="tosteta-count" id="tosteta-count-label"
+                >Count:
+              </label>
+              <input
+                type="number"
+                name="tostetaCount"
+                id="tosteta-count"
+                class="numberInput2"
+                value="0"
+              />
+            </div>
+          </article>
+          <article id="coffee-article">
+            <label for="coffee" id="coffee-label">Coffee: 60₹</label>
+            <input
+              type="checkbox"
+              name="coffee"
+              class="coffee showInput3"
+              onchange="toggleInputVisibility(3)"
+            />
+            <div class="count-container">
+              <label for="coffee-count" id="coffee-count-label">Count: </label>
+              <input
+                type="number"
+                name="coffeeCount"
+                id="coffee-count"
+                class="numberInput3"
+                value="0"
+              />
+            </div>
+          </article>
+          <article id="combo1-article">
+            <label for="combo1" id="combo1-label"
+              >Combo 1: 180₹ (2 Coffee + 1 Tosteta (3pcs))</label
+            >
+            <input
+              type="checkbox"
+              name="combo1"
+              class="combo1 showInput4"
+              onchange="toggleInputVisibility(4)"
+            />
+            <div class="count-container">
+              <label for="combo1-count" id="combo1-count-label">Count: </label>
+              <input
+                type="number"
+                name="combo1Count"
+                id="combo1-count"
+                class="numberInput4"
+                value="0"
+              />
+            </div>
+          </article>
+          <article id="combo2-article">
+            <label for="combo2" id="combo2-label"
+              >Combo 2: 160₹ (1 Coffee + 1 Tosteta (5pcs))</label
+            >
+            <input
+              type="checkbox"
+              name="combo2"
+              class="combo2 showInput5"
+              onchange="toggleInputVisibility(5)"
+            />
+            <div class="count-container">
+              <label for="combo2-count" id="combo2-count-label">Count: </label>
+              <input
+                type="number"
+                name="combo2Count"
+                id="combo2-count"
+                class="numberInput5"
+                value="0"
+              />
+            </div>
+          </article>
+        </section>
+        <hr />
+        <section id="payment-mode">
+          <h2>Payment Mode</h2>
+          <article>
+            <label for="online">Online</label>
+            <input
+              type="radio"
+              value="online"
+              name="payment-mode"
+              class="online"
+              checked
+            />
+            <label for="offline">Cash</label>
+            <input
+              type="radio"
+              value="offline"
+              name="payment-mode"
+              class="offline"
+            />
+          </article>
+        </section>
+        <hr />
+        <h1 id="heading">The previous total was: 0</h1>
+        <section id="submit-section">
+          <input type="submit" value="Submit" />
+          <input type="reset" value="Reset" />
+        </section>
+      </form>
+    </div>
+    <script>
+      function toggleInputVisibility(number) {
+        let isChecked = "unchecked";
+        const input = document.querySelector(".numberInput" + number);
+        const checkbox = document.querySelector(".showInput" + number);
+        if (checkbox.checked) {
+          isChecked = "checked";
+          input.value = 1;
+        } else {
+          input.value = 0;
+        }
+      }
+
+      function radioCheck(number) {
+        const input = document.querySelector(".numberInput" + number);
+        let isChecked = "unchecked";
+        const radioButtons = document.querySelectorAll(
+          'input[type="radio"][name="tosteta"]'
+        );
+
+        radioButtons.forEach((radioButton) => {
+          if (radioButton.checked) {
+            isChecked = "checked";
+            input.value = 1;
+          }
+        });
+      }
+      function findTotal() {
+        const pricing = {
+          skippi: 20,
+          toasteta3: 80,
+          toasteta5: 120,
+          coffee: 60,
+          combo1: 180,
+          combo2: 160,
+        };
+
+        const skippiCount = parseInt(
+          document.getElementById("skippi-count").value
+        );
+        const toastetaCount = parseInt(
+          document.getElementById("tosteta-count").value
+        );
+        const coffeeCount = parseInt(
+          document.getElementById("coffee-count").value
+        );
+        const combo1Count = parseInt(
+          document.getElementById("combo1-count").value
+        );
+        const combo2Count = parseInt(
+          document.getElementById("combo2-count").value
+        );
+
+        let toastetaType = "toasteta3"; // Default value
+        const toastetaRadios = document.getElementsByName("tosteta");
+
+        for (let i = 0; i < toastetaRadios.length; i++) {
+          if (toastetaRadios[i].checked) {
+            toastetaType = "toasteta" + toastetaRadios[i].value;
+            break;
+          }
+        }
+        const total =
+          skippiCount * pricing["skippi"] +
+          toastetaCount * pricing[toastetaType] +
+          coffeeCount * pricing["coffee"] +
+          combo1Count * pricing["combo1"] +
+          combo2Count * pricing["combo2"];
+        localStorage.setItem("total", total);
+        return total;
+      }
+      document.querySelector("form").addEventListener("submit", () => {
+        const total = findTotal();
+      });
+      document.querySelector(
+        "h1#heading"
+      ).textContent = `The previous total was: ${
+        localStorage.getItem("total") || 0
+      }`;
+    </script>
+    <script src="../public/index.js"></script>
+  </body>
+</html>
