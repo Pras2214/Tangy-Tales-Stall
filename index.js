@@ -22,7 +22,7 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-mongoose.connect("mongodb://0.0.0.0:27017/zaykaStall");
+mongoose.connect((process.env.MONGODB_URI || "mongodb://0.0.0.0:27017") + "/zaykaStall");
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
