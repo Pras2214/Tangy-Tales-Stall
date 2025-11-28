@@ -11,7 +11,8 @@ const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const axios = require("axios");
+const { sendMessage, getQrCode, getClientStatus } = require("./server");
+const QRCode = require('qrcode');
 
 const app = express();
 
@@ -49,6 +50,28 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+app.get("/connect", async (req, res) => {
+  if (getClientStatus()) {
+    res.send("<h1>WhatsApp Client is already connected!</h1>");
+  } else {
+    const qrCode = getQrCode();
+    if (qrCode) {
+      try {
+        const qrImage = await QRCode.toDataURL(qrCode);
+        res.send(`
+          <h1>Scan this QR Code to Connect</h1>
+          <img src="${qrImage}" alt="QR Code" />
+          <p>Reload this page if the QR code expires.</p>
+        `);
+      } catch (err) {
+        res.status(500).send("Error generating QR code image");
+      }
+    } else {
+      res.send("<h1>Initializing... Please reload in a few seconds.</h1>");
+    }
+  }
+});
+
 app.post("/submit-form", async (req, res) => {
   res.redirect("/");
   const receipientNumber = "91" + req.body.pNumber;
@@ -78,31 +101,17 @@ app.post("/submit-form", async (req, res) => {
     combo1: req.body.combo1Count || 0,
     combo2: req.body.combo2Count || 0,
     paymentMode: req.body["payment-mode"],
-    total : total
+    total: total
   });
 
 
   const message = `Hello ${receipientName}, Thank you for ordering at Tangy Tales. You paid a total of ${total}₹ in ${paymentMode} mode. Do visit us again!! 😊`;
 
-  axios.post(
-    "http://localhost:3000/messages/send?sessionId=Prasann",
-    {
-      jid: `${receipientNumber}@s.whatsapp.net`,
-      type: "number",
-      message: {
-        text: message,
-      },
-    },
-    {
-      headers: {
-        auth_token: "hello1234",
-      },
-    }
-  );
+  sendMessage(receipientNumber, message);
   formData.save();
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
